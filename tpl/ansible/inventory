@@ -1,0 +1,10 @@
+[masters]
+  $MASTERS
+[masters:vars]
+  ansible_python_interpreter=/opt/mesosphere/bin/python3.6
+ 
+[agents]
+  $AGENTS
+
+[agents:vars]
+  ansible_python_interpreter=/opt/mesosphere/bin/python3.6

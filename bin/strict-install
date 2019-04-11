@@ -1,0 +1,45 @@
+#!/usr/bin/env zsh
+# usage: strict-install elastic
+
+dcos_url=$(dcos config show core.dcos_url)
+dcos_acs_token=$(dcos config show core.dcos_acs_token)
+secret_name="$1_secret"
+service_account_id="$1"
+ts=$(date "+%Y%m%d")
+tmp="/tmp/install_$1_$ts"
+
+echo "Attempting to install the $1 package on the cluster at $dcos_url..."
+echo "  (sandbox directory is $tmp)"
+
+mkdir -p "$tmp"
+pushd "$tmp"
+echo "Installing enterprise CLI..."
+dcos package install --yes dcos-enterprise-cli
+
+echo "Obtaining certificate..."
+curl -k -v "$dcos_url/ca/dcos-ca.crt" -o dcos-ca.crt
+
+echo "Creating service account..."
+dcos security org service-accounts keypair private-key.pem public-key.pem
+dcos security org service-accounts create -p public-key.pem -d "$1 Service Account" $service_account_id
+
+echo "Granting service account superuser permissions..."
+curl -X PUT --cacert dcos-ca.crt -H "Authorization: token=$dcos_acs_token" "$dcos_url/acs/api/v1/acls/dcos:superuser/users/$service_account_id/full"                                                                
+
+echo "Uploading service account's secret..."
+dcos security secrets create-sa-secret private-key.pem $service_account_id $secret_name
+
+echo "Creating configuration file..."
+tee config.json << EOF
+{
+  "service": {
+    "service_account": "$service_account_id",
+    "service_account_secret": "$secret_name"
+  }
+}
+EOF
+
+echo "Installing package with full permissions"
+dcos package install --options=config.json $1
+
+popd

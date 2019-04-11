@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Upload fluent-bit.conf
+    copy:
+      dest: /opt/mesosphere/etc/fluent-bit/fluent-bit.conf
+      src: fluent-bit.conf
+  - name: Restart fluent-bit
+    systemd:
+      state: restarted
+      name: dcos-fluent-bit

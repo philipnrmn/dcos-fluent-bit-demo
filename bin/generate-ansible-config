@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+# usage: generate-ansible-config
+
+NODE_JSON="$(dcos node --json)"
+export MASTERS="$(echo "$NODE_JSON" | jq -r '.[] | select(.type != "agent") | .ip')"
+export AGENTS="$(echo "$NODE_JSON" | jq -r '.[] | select(.type == "agent") | .hostname')"
+export PUBLIC_IP="$(dcos node ssh --master-proxy --leader 'curl ifconfig.co' | head -1)"
+
+mkdir -p ansible
+cp -R tpl/ansible/* ansible
+envsubst < tpl/ansible/ssh.cfg > ansible/ssh.cfg
+envsubst < tpl/ansible/inventory > ansible/inventory
+
+
