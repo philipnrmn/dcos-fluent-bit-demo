@@ -27,4 +27,4 @@ ansible-playbook -i inventory send-to-elastic.yaml
 ```
 
 Open your browser to https://<cluster-ip>/service/kibana/app/kibana (note that the UI link is currently not working).
-Add an index to 
+Add an index to `logstash-`. Metrics should begin arriving immediately. 
