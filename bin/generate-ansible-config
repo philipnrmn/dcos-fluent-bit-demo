@@ -7,8 +7,11 @@ export AGENTS="$(echo "$NODE_JSON" | jq -r '.[] | select(.type == "agent") | .ho
 export PUBLIC_IP="$(dcos node ssh --master-proxy --leader 'curl ifconfig.co' | head -1)"
 
 mkdir -p ansible
-cp -R tpl/ansible/* ansible
 envsubst < tpl/ansible/ssh.cfg > ansible/ssh.cfg
 envsubst < tpl/ansible/inventory > ansible/inventory
+envsubst < tpl/ansible/ansible.cfg > ansible/ansible.cfg
 
+cp send-to-elastic.yaml ansible
+cp agent.conf ansible
+cp master.conf ansible
 

@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Upload master.conf
+    copy:
+      dest: /opt/mesosphere/active/dcos-config/etc/fluent-bit/master.conf
+      src: master.conf
+  - name: Upload agent.conf
+    copy:
+      dest: /opt/mesosphere/active/dcos-config/etc/fluent-bit/agent.conf
+      src: agent.conf
+  - name: Restart fluent-bit
+    systemd:
+      state: restarted
+      name: dcos-fluent-bit

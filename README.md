@@ -26,3 +26,5 @@ ansible -i inventory all -m ping
 ansible-playbook -i inventory send-to-elastic.yaml
 ```
 
+Open your browser to https://<cluster-ip>/service/kibana/app/kibana (note that the UI link is currently not working).
+Add an index to 
