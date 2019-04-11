@@ -17,9 +17,11 @@ strict-install elastic
 strict-install kibana 
 
 # Generate ansible configuration for this cluster
-dcos node --json | generate-ansible-config
+generate-ansible-config
 cd ansible
 
+# Check that ansible is appropriately configured (eg check SSH key is available)
+ansible -i inventory all -m ping
 # Start sending data to elastic from each node
 ansible-playbook -i inventory send-to-elastic.yaml
 ```
