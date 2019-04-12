@@ -1,5 +1,13 @@
 # dcos-fluent-bit-demo
 
+## Prerequisites
+
+ - an ssh key which can access your cluster, as defined in ssh.cfg
+ - dcos-cli logged in to your cluster
+ - 5-agent Enterprise DC/OS >1.13.0-alpha cluster (this won't work on regualr DC/OS without modification)
+
+## Usage
+
 ```bash
 # Installation
 git clone https://github.com/philipnrmn/dcos-fluent-bit-demo.git
@@ -26,5 +34,6 @@ ansible -i inventory all -m ping
 ansible-playbook -i inventory send-to-elastic.yaml
 ```
 
-Open your browser to https://<cluster-ip>/service/kibana/app/kibana (note that the UI link is currently not working).
-Add an index to `logstash-`. Metrics should begin arriving immediately. 
+## Next steps
+
+Open your browser to https://your-cluster-ip/service/kibana/app/kibana (note that the UI link is currently not working).
