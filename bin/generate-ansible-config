@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 # usage: generate-ansible-config
 
-NODE_JSON="$(dcos node --json)"
+NODE_JSON="$(dcos node list --json)"
 export MASTERS="$(echo "$NODE_JSON" | jq -r '.[] | select(.type != "agent") | .ip')"
 export AGENTS="$(echo "$NODE_JSON" | jq -r '.[] | select(.type == "agent") | .hostname')"
 export PUBLIC_IP="$(dcos node ssh --master-proxy --leader 'curl ifconfig.co' | head -1)"
